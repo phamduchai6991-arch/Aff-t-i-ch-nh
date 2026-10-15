@@ -1,6 +1,6 @@
 node_modules/
 build/
-dist/
+# dist/ (uncommented so built files can be pushed to GitHub)
 coverage/
 .DS_Store
 *.log
