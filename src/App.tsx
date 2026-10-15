@@ -77,7 +77,21 @@ export default function App() {
       }
     };
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+
+    // Subtle shortcut: Ctrl+Shift+A or Alt+A to toggle Admin
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') || (e.altKey && e.key.toLowerCase() === 'a')) {
+        e.preventDefault();
+        window.location.hash = '#admin';
+        setViewMode('admin');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const handleSwitchToAdmin = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lead, FinancialProduct, AdminUser, AnalyticsData } from '../../types';
+import { Lead, FinancialProduct, AdminUser, AnalyticsData, ApplicationStep } from '../../types';
 import { 
   fetchLeads, 
   updateLeadStatusAndNotes, 
@@ -39,7 +39,11 @@ import {
   X,
   FileSpreadsheet,
   ArrowUpRight,
-  HelpCircle
+  HelpCircle,
+  BookOpen,
+  Edit3,
+  Layers,
+  Sparkles
 } from 'lucide-react';
 
 interface AdminPortalProps {
@@ -57,7 +61,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   products,
   onUpdateProduct
 }) => {
-  const [activeMenu, setActiveMenu] = useState<'leads' | 'dashboard' | 'create_lead' | 'affiliates'>('leads');
+  const [activeMenu, setActiveMenu] = useState<'leads' | 'dashboard' | 'create_lead' | 'affiliates' | 'guides'>('leads');
   const [leads, setLeads] = useState<Lead[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,6 +80,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   // Affiliate link editing
   const [editingAffiliateId, setEditingAffiliateId] = useState<string | null>(null);
   const [affiliateInputUrl, setAffiliateInputUrl] = useState('');
+
+  // Guide & Bank Customization State
+  const [selectedBankId, setSelectedBankId] = useState<string>(products[0]?.id || 'vpbank-fast');
+  const [editingProduct, setEditingProduct] = useState<FinancialProduct | null>(null);
+  const [guideSaveMessage, setGuideSaveMessage] = useState('');
+  const [previewGuideModal, setPreviewGuideModal] = useState<FinancialProduct | null>(null);
+
+  // Synchronize editing product when selectedBankId or products change
+  useEffect(() => {
+    const found = products.find(p => p.id === selectedBankId);
+    if (found) {
+      setEditingProduct(JSON.parse(JSON.stringify(found)));
+    } else if (products.length > 0) {
+      setSelectedBankId(products[0].id);
+      setEditingProduct(JSON.parse(JSON.stringify(products[0])));
+    }
+  }, [selectedBankId, products]);
 
   // Manual Lead Creation Form
   const [manualForm, setManualForm] = useState({
@@ -233,6 +254,64 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     alert('Đã cập nhật link affiliate thành công!');
   };
 
+  // --- GUIDE & STEPS EDITOR HANDLERS ---
+  const handleStepChange = (index: number, field: keyof ApplicationStep, value: string) => {
+    if (!editingProduct) return;
+    const steps = [...editingProduct.applicationSteps];
+    steps[index] = { ...steps[index], [field]: value };
+    setEditingProduct({ ...editingProduct, applicationSteps: steps });
+  };
+
+  const handleAddStep = () => {
+    if (!editingProduct) return;
+    const steps = [...editingProduct.applicationSteps];
+    steps.push({
+      stepNumber: steps.length + 1,
+      title: `Bước ${steps.length + 1}: Thao tác trên cổng ${editingProduct.provider}`,
+      description: 'Nhập thông tin hướng dẫn chi tiết dành cho khách hàng...',
+      tip: 'Mẹo tăng tỷ lệ duyệt nhanh hồ sơ'
+    });
+    setEditingProduct({ ...editingProduct, applicationSteps: steps });
+  };
+
+  const handleRemoveStep = (index: number) => {
+    if (!editingProduct || editingProduct.applicationSteps.length <= 1) {
+      alert('Cần có ít nhất 1 bước hướng dẫn');
+      return;
+    }
+    const steps = editingProduct.applicationSteps
+      .filter((_, idx) => idx !== index)
+      .map((s, idx) => ({ ...s, stepNumber: idx + 1 }));
+    setEditingProduct({ ...editingProduct, applicationSteps: steps });
+  };
+
+  const handleRequirementChange = (index: number, value: string) => {
+    if (!editingProduct) return;
+    const reqs = [...editingProduct.requirements];
+    reqs[index] = value;
+    setEditingProduct({ ...editingProduct, requirements: reqs });
+  };
+
+  const handleAddRequirement = () => {
+    if (!editingProduct) return;
+    const reqs = [...editingProduct.requirements, 'Điều kiện mới cần bổ sung'];
+    setEditingProduct({ ...editingProduct, requirements: reqs });
+  };
+
+  const handleRemoveRequirement = (index: number) => {
+    if (!editingProduct || editingProduct.requirements.length <= 1) return;
+    const reqs = editingProduct.requirements.filter((_, idx) => idx !== index);
+    setEditingProduct({ ...editingProduct, requirements: reqs });
+  };
+
+  const handleSaveGuideProduct = async () => {
+    if (!editingProduct) return;
+    await saveCustomProduct(editingProduct);
+    onUpdateProduct(editingProduct);
+    setGuideSaveMessage(`Đã lưu hướng dẫn & thông tin cho ${editingProduct.name} thành công!`);
+    setTimeout(() => setGuideSaveMessage(''), 4000);
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row font-sans antialiased">
       {/* --- SIDEBAR NAVIGATION --- */}
@@ -241,12 +320,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
           {/* Brand lockup */}
           <div className="p-5 border-b border-slate-800 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <span className="w-8 h-8 rounded-lg bg-blue-600 text-white font-extrabold flex items-center justify-center text-sm shadow-md shadow-blue-500/20">
-                VN
+              <span className="w-8 h-8 rounded-lg bg-blue-600 text-white font-extrabold flex items-center justify-center text-xs shadow-md shadow-blue-500/20">
+                SKV
               </span>
               <div>
-                <span className="font-extrabold tracking-tight text-white text-base">
-                  VayNhanh<span className="text-blue-500">247</span>
+                <span className="font-extrabold tracking-tight text-white text-sm">
+                  sosanhkhoanvay<span className="text-blue-500">.com</span>
                 </span>
                 <span className="block text-[10px] text-blue-400 font-semibold uppercase tracking-wider">
                   Admin Console
@@ -273,6 +352,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                 activeMenu === 'leads' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-300'
               }`}>
                 {leads.length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setActiveMenu('guides')}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
+                activeMenu === 'guides'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <BookOpen className="w-4 h-4 text-emerald-400" />
+                <span>Tùy chỉnh Hướng dẫn Bank</span>
+              </div>
+              <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">
+                {products.length}
               </span>
             </button>
 
@@ -334,7 +430,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
           <div className="grid grid-cols-2 gap-2 pt-1">
             <button
               onClick={onBackToHome}
-              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-medium flex items-center justify-center gap-1.5 transition-colors"
+              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               title="Mở giao diện khách hàng"
             >
               <Home className="w-3.5 h-3.5" />
@@ -343,7 +439,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={onLogout}
-              className="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 rounded-lg text-[11px] font-medium flex items-center justify-center gap-1.5 transition-colors"
+              className="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 rounded-lg text-[11px] font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               title="Đăng xuất khỏi hệ thống"
             >
               <LogOut className="w-3.5 h-3.5" />
@@ -360,6 +456,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
           <div className="flex items-center gap-3">
             <h1 className="text-base sm:text-lg font-bold text-white">
               {activeMenu === 'leads' && 'Quản Lý Khách Hàng Tiềm Năng (Leads CRM)'}
+              {activeMenu === 'guides' && 'Tùy Chỉnh Hướng Dẫn & Thông Tin Từng Ngân Hàng'}
               {activeMenu === 'dashboard' && 'Thống Kê Doanh Thu & Hiệu Quả Tiếp Thị'}
               {activeMenu === 'create_lead' && 'Thêm Mới Hồ Sơ Khách Hàng (Telesale Entry)'}
               {activeMenu === 'affiliates' && 'Cấu Hình Link Tiếp Thị Liên Kết (Affiliate)'}
@@ -370,7 +467,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
           <div className="flex items-center gap-2.5">
             <button
               onClick={loadData}
-              className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition-colors"
+              className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition-colors cursor-pointer"
               title="Tải lại dữ liệu mới nhất"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
@@ -379,7 +476,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             <a
               href="/api/leads/export/csv"
               download
-              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-xs transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
               title="Tải toàn bộ danh sách khách hàng định dạng CSV/Excel"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
@@ -387,6 +484,326 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             </a>
           </div>
         </header>
+
+        {/* --- VIEW: GUIDE & BANK CUSTOMIZATION (NEW) --- */}
+        {activeMenu === 'guides' && (
+          <div className="p-6 space-y-6">
+            {/* Overview Banner */}
+            <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <BookOpen className="w-4 h-4" />
+                  <span>Trình chỉnh sửa Hướng dẫn nộp hồ sơ đa ngân hàng</span>
+                </div>
+                <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                  Tại đây bạn có thể thay đổi các bước hướng dẫn (Step 1, 2, 3, 4...), mẹo duyệt hồ sơ, điều kiện giấy tờ hoặc đường dẫn affiliate riêng cho từng ngân hàng. Thay đổi sẽ cập nhật ngay lập tức ra ngoài giao diện trang chủ cho khách hàng xem!
+                </p>
+              </div>
+
+              {guideSaveMessage && (
+                <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 rounded-xl text-xs flex items-center gap-2 animate-in fade-in">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span className="font-semibold">{guideSaveMessage}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Bank Selector Tabs (Vay & Thẻ) */}
+            <div className="space-y-3">
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                Chọn ngân hàng / sản phẩm muốn chỉnh sửa:
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                {products.map((prod) => {
+                  const isSelected = selectedBankId === prod.id;
+                  return (
+                    <button
+                      key={prod.id}
+                      onClick={() => setSelectedBankId(prod.id)}
+                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        isSelected
+                          ? 'bg-blue-600 border-blue-500 text-white shadow-md'
+                          : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800/80'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className={`w-6 h-6 rounded text-[10px] font-bold flex items-center justify-center ${
+                          isSelected ? 'bg-white text-blue-600' : 'bg-slate-800 text-slate-300'
+                        }`}>
+                          {prod.providerInitial}
+                        </span>
+                        <span className="font-bold text-xs truncate">{prod.provider}</span>
+                      </div>
+                      <div className="text-[11px] truncate opacity-90">{prod.name}</div>
+                      <div className="text-[10px] mt-1 opacity-75 font-mono">
+                        {prod.category === 'loan' ? 'Vay tín chấp' : 'Thẻ tín dụng'}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Selected Product Editor Form */}
+            {editingProduct && (
+              <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6 space-y-8">
+                {/* Product Title & Basic Info */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${editingProduct.themeColor} text-white font-extrabold text-sm flex items-center justify-center shadow-md`}>
+                      {editingProduct.providerInitial}
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-white flex items-center gap-2">
+                        <span>Đang sửa hướng dẫn: {editingProduct.name}</span>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-normal">
+                          {editingProduct.category === 'loan' ? 'Gói Vay' : 'Thẻ Tín Dụng'}
+                        </span>
+                      </h2>
+                      <p className="text-xs text-slate-400">
+                        Nhà cung cấp: <span className="font-semibold text-white">{editingProduct.provider}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      onClick={() => setPreviewGuideModal(editingProduct)}
+                      className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-blue-400" />
+                      <span>Xem thử popup</span>
+                    </button>
+
+                    <button
+                      onClick={handleSaveGuideProduct}
+                      className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md transition-all cursor-pointer"
+                    >
+                      <Save className="w-4 h-4" />
+                      <span>Lưu Hướng Dẫn & Áp Dụng</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Section 1: Hướng Dẫn Từng Bước (Steps Editor) */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                        <Edit3 className="w-4 h-4 text-blue-400" />
+                        <span>1. Các bước hướng dẫn nộp hồ sơ ({editingProduct.applicationSteps.length} bước)</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Khách hàng sẽ đọc hướng dẫn này khi bấm "Xem hướng dẫn" ngoài trang chủ.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={handleAddStep}
+                      className="px-3 py-1.5 bg-blue-600/30 hover:bg-blue-600 text-blue-200 hover:text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Thêm bước tiếp theo</span>
+                    </button>
+                  </div>
+
+                  {/* Steps List */}
+                  <div className="space-y-4">
+                    {editingProduct.applicationSteps.map((step, idx) => (
+                      <div key={idx} className="bg-slate-800/80 p-4 rounded-xl border border-slate-700/80 space-y-3 relative">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-xs text-blue-400 font-mono">
+                            BƯỚC {step.stepNumber || idx + 1}
+                          </span>
+                          <button
+                            onClick={() => handleRemoveStep(idx)}
+                            className="p-1 text-slate-400 hover:text-rose-400 hover:bg-slate-700 rounded transition-colors"
+                            title="Xóa bước này"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* Title input */}
+                        <div>
+                          <label className="block text-[11px] font-semibold text-slate-300 mb-1">
+                            Tiêu đề bước:
+                          </label>
+                          <input
+                            type="text"
+                            value={step.title}
+                            onChange={(e) => handleStepChange(idx, 'title', e.target.value)}
+                            placeholder="Ví dụ: Bấm nút 'Đến trang đăng ký chính thức'..."
+                            className="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                          />
+                        </div>
+
+                        {/* Description textarea */}
+                        <div>
+                          <label className="block text-[11px] font-semibold text-slate-300 mb-1">
+                            Mô tả chi tiết cách thức thao tác:
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={step.description}
+                            onChange={(e) => handleStepChange(idx, 'description', e.target.value)}
+                            placeholder="Mô tả cụ thể khách hàng cần điền gì, chụp ảnh gì..."
+                            className="w-full p-2.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                          />
+                        </div>
+
+                        {/* Tip input */}
+                        <div>
+                          <label className="block text-[11px] font-semibold text-amber-400 mb-1">
+                            Mẹo nhỏ tăng tỷ lệ duyệt 99% (nếu có):
+                          </label>
+                          <input
+                            type="text"
+                            value={step.tip || ''}
+                            onChange={(e) => handleStepChange(idx, 'tip', e.target.value)}
+                            placeholder="Ví dụ: Đứng ở nơi đủ ánh sáng để hệ thống AI quét CCCD..."
+                            className="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-amber-200 focus:outline-none focus:border-amber-500"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section 2: Điều Kiện & Giấy Tờ Cần Chuẩn Bị (Requirements) */}
+                <div className="space-y-3 pt-4 border-t border-slate-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        <span>2. Điều kiện & Giấy tờ cần chuẩn bị ({editingProduct.requirements.length} điều kiện)</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Các tiêu chí bắt buộc (tuổi, CCCD, thu nhập, tình trạng CIC...).
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={handleAddRequirement}
+                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Thêm điều kiện</span>
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {editingProduct.requirements.map((req, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-xs text-blue-400 font-bold shrink-0">✓</span>
+                        <input
+                          type="text"
+                          value={req}
+                          onChange={(e) => handleRequirementChange(idx, e.target.value)}
+                          placeholder="Ví dụ: Công dân Việt Nam tuổi từ 20 đến 60..."
+                          className="flex-1 px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                        />
+                        <button
+                          onClick={() => handleRemoveRequirement(idx)}
+                          className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-slate-800 rounded"
+                          title="Xóa điều kiện này"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section 3: Affiliate Link & Parameters */}
+                <div className="space-y-4 pt-4 border-t border-slate-800">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Link2 className="w-4 h-4 text-blue-400" />
+                    <span>3. Đường link Affiliate & Thông số hiển thị</span>
+                  </h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        Đường dẫn Affiliate đích (KH bấm vào sẽ mở link này):
+                      </label>
+                      <input
+                        type="url"
+                        value={editingProduct.affiliateUrl}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, affiliateUrl: e.target.value })}
+                        placeholder="https://..."
+                        className="w-full px-3.5 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-blue-300 font-mono focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        Hạn mức tối đa hiển thị:
+                      </label>
+                      <input
+                        type="text"
+                        value={editingProduct.maxLimit}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, maxLimit: e.target.value })}
+                        className="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        Lãi suất hiển thị:
+                      </label>
+                      <input
+                        type="text"
+                        value={editingProduct.interestRate}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, interestRate: e.target.value })}
+                        className="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-emerald-400 font-semibold focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        Thời gian duyệt hồ sơ:
+                      </label>
+                      <input
+                        type="text"
+                        value={editingProduct.approvalSpeed}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, approvalSpeed: e.target.value })}
+                        className="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        Thu nhập tối thiểu yêu cầu:
+                      </label>
+                      <input
+                        type="text"
+                        value={editingProduct.minIncome}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, minIncome: e.target.value })}
+                        className="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Save Action */}
+                <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+                  <div className="text-xs text-slate-400">
+                    Bấm lưu để đồng bộ thay đổi vào cơ sở dữ liệu và hiển thị ngay ngoài website.
+                  </div>
+                  <button
+                    onClick={handleSaveGuideProduct}
+                    className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg transition-all cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>Lưu Tất Cả Cập Nhật Của {editingProduct.provider}</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* --- VIEW 1: LEADS MANAGEMENT (CRM) --- */}
         {activeMenu === 'leads' && (
@@ -480,19 +897,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleBatchStatus('contacted')}
-                    className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+                    className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium cursor-pointer"
                   >
                     Đổi: Đang gọi
                   </button>
                   <button
                     onClick={() => handleBatchStatus('disbursed')}
-                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium"
+                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium cursor-pointer"
                   >
                     Đổi: Đã giải ngân
                   </button>
                   <button
                     onClick={handleBatchDelete}
-                    className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-medium flex items-center gap-1"
+                    className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-medium flex items-center gap-1 cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>Xóa các mục đã chọn</span>
@@ -658,14 +1075,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                               <div className="flex items-center justify-end gap-1">
                                 <button
                                   onClick={() => setViewingLead(lead)}
-                                  className="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-slate-800 rounded-lg transition-colors"
+                                  className="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                                   title="Xem chi tiết hồ sơ & lịch sử tương tác"
                                 >
                                   <Eye className="w-3.5 h-3.5" />
                                 </button>
                                 <button
                                   onClick={() => handleDeleteLead(lead.id)}
-                                  className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition-colors"
+                                  className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                                   title="Xóa hồ sơ này"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
@@ -978,14 +1395,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       <div className="flex items-center gap-2 w-full sm:w-auto">
                         <button
                           onClick={() => handleSaveAffiliate(prod)}
-                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
+                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                         >
                           <Save className="w-3.5 h-3.5" />
                           <span>Lưu link</span>
                         </button>
                         <button
                           onClick={() => setEditingAffiliateId(null)}
-                          className="px-3 py-2 bg-slate-800 text-slate-300 hover:text-white rounded-xl text-xs transition-colors"
+                          className="px-3 py-2 bg-slate-800 text-slate-300 hover:text-white rounded-xl text-xs transition-colors cursor-pointer"
                         >
                           Hủy
                         </button>
@@ -1000,7 +1417,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                             setEditingAffiliateId(prod.id);
                             setAffiliateInputUrl(prod.affiliateUrl);
                           }}
-                          className="text-xs font-semibold text-blue-400 hover:text-blue-300 hover:underline"
+                          className="text-xs font-semibold text-blue-400 hover:text-blue-300 hover:underline cursor-pointer"
                         >
                           Đổi link
                         </button>
@@ -1023,6 +1440,84 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
         )}
       </div>
 
+      {/* --- PREVIEW GUIDE MODAL (FOR ADMIN) --- */}
+      {previewGuideModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white text-slate-900 rounded-2xl max-w-2xl w-full p-6 space-y-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${previewGuideModal.themeColor} text-white font-bold text-xs flex items-center justify-center`}>
+                  {previewGuideModal.providerInitial}
+                </div>
+                <div>
+                  <div className="text-[11px] font-semibold text-blue-600 uppercase">
+                    Xem trước giao diện hướng dẫn khách hàng
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900">
+                    {previewGuideModal.name}
+                  </h3>
+                </div>
+              </div>
+              <button
+                onClick={() => setPreviewGuideModal(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Requirements */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                1. Giấy tờ & Điều kiện chuẩn bị:
+              </h4>
+              <ul className="space-y-1.5 bg-blue-50/50 p-3.5 rounded-xl border border-blue-100 text-xs text-slate-700">
+                {previewGuideModal.requirements.map((req, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                    <span>{req}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Steps */}
+            <div className="space-y-2.5">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                2. Quy trình thao tác:
+              </h4>
+              <div className="space-y-3">
+                {previewGuideModal.applicationSteps.map((step) => (
+                  <div key={step.stepNumber} className="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                    <span className="w-6 h-6 rounded-full bg-blue-600 text-white font-bold text-[11px] flex items-center justify-center shrink-0">
+                      {step.stepNumber}
+                    </span>
+                    <div className="flex-1 space-y-1">
+                      <div className="font-bold text-slate-900">{step.title}</div>
+                      <div className="text-slate-600 leading-relaxed">{step.description}</div>
+                      {step.tip && (
+                        <div className="text-[11px] text-amber-800 bg-amber-50 p-1.5 rounded border border-amber-200">
+                          <strong>Mẹo:</strong> {step.tip}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setPreviewGuideModal(null)}
+                className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold"
+              >
+                Đóng xem thử
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* --- LEAD DETAIL & CALL LOG DRAWER MODAL --- */}
       {viewingLead && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-xs flex items-center justify-end p-0 animate-in fade-in duration-150">
@@ -1044,7 +1539,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
               </div>
               <button
                 onClick={() => setViewingLead(null)}
-                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1127,7 +1622,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     <button
                       type="button"
                       onClick={() => setNewActivityType('call')}
-                      className={`px-2.5 py-1 rounded-md font-medium ${
+                      className={`px-2.5 py-1 rounded-md font-medium cursor-pointer ${
                         newActivityType === 'call' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300'
                       }`}
                     >
@@ -1136,7 +1631,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     <button
                       type="button"
                       onClick={() => setNewActivityType('zalo')}
-                      className={`px-2.5 py-1 rounded-md font-medium ${
+                      className={`px-2.5 py-1 rounded-md font-medium cursor-pointer ${
                         newActivityType === 'zalo' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300'
                       }`}
                     >
@@ -1145,7 +1640,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     <button
                       type="button"
                       onClick={() => setNewActivityType('system')}
-                      className={`px-2.5 py-1 rounded-md font-medium ${
+                      className={`px-2.5 py-1 rounded-md font-medium cursor-pointer ${
                         newActivityType === 'system' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300'
                       }`}
                     >

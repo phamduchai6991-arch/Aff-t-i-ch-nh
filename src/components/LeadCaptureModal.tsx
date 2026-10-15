@@ -414,7 +414,7 @@ export const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
               </div>
 
               {/* Instructions on Partner Page */}
-              <div className="text-left bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs text-slate-600">
+              <div className="text-left bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5 text-xs text-slate-600">
                 <div className="font-bold text-slate-800 flex items-center gap-1.5 text-xs uppercase tracking-wider">
                   <Clock className="w-3.5 h-3.5 text-blue-600" />
                   <span>3 lưu ý quan trọng khi thao tác:</span>
@@ -430,6 +430,13 @@ export const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
                     Sau khi bạn đăng ký trên link đối tác, chuyên viên của {product.provider} sẽ chủ động liên hệ hoàn tất hồ sơ trong vòng 15-30 phút.
                   </li>
                 </ol>
+
+                <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
+                  <span>Cần hỗ trợ gấp? Gọi ngay hotline:</span>
+                  <a href="tel:0583345345" className="font-bold text-blue-600 hover:underline">
+                    0583 345 345 (24/7)
+                  </a>
+                </div>
               </div>
 
               {/* Close or Finish */}

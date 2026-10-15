@@ -8,9 +8,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
+
+// Container health check for Google Cloud Run
+app.get('/health', (_req, res) => {
+  res.status(200).send('OK');
+});
+
+import { INITIAL_PRODUCTS } from './src/data/financialProducts.ts';
 
 // Persistent data directory
 const DATA_DIR = path.join(__dirname, 'data');
@@ -20,6 +27,32 @@ const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+// Helper to read products
+function getProductsData(): any[] {
+  if (fs.existsSync(PRODUCTS_FILE)) {
+    try {
+      const content = fs.readFileSync(PRODUCTS_FILE, 'utf-8');
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } catch {}
+  }
+  try {
+    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(INITIAL_PRODUCTS, null, 2), 'utf-8');
+  } catch {}
+  return INITIAL_PRODUCTS;
+}
+
+// Helper to save products
+function saveProductsData(products: any[]) {
+  try {
+    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf-8');
+  } catch (e) {
+    console.error("Error saving products:", e);
+  }
 }
 
 // Credentials configuration as requested:
@@ -168,15 +201,16 @@ function requireAdminAuth(req: express.Request, res: express.Response, next: exp
 
 // Login endpoint: supports PIN (6991) or Credentials (admin / duchai168)
 app.post('/api/auth/login', (req, res) => {
-  const { type, pin, username, password } = req.body;
+  const { type, method, pin, username, password } = req.body;
+  const loginType = type || method;
 
   let isValid = false;
 
-  if (type === 'pin') {
+  if (loginType === 'pin' || pin) {
     if (String(pin).trim() === ADMIN_CONFIG.pin) {
       isValid = true;
     }
-  } else if (type === 'account' || type === 'credentials') {
+  } else if (loginType === 'account' || loginType === 'credentials' || username) {
     if (
       String(username).trim() === ADMIN_CONFIG.username &&
       String(password).trim() === ADMIN_CONFIG.password
@@ -188,7 +222,7 @@ app.post('/api/auth/login', (req, res) => {
   if (!isValid) {
     return res.status(401).json({
       success: false,
-      message: type === 'pin' ? 'Mã PIN 4 số không chính xác (gợi ý: 6991)' : 'Tên tài khoản hoặc mật khẩu không đúng'
+      message: (loginType === 'pin' || pin) ? 'Mã PIN 4 số không chính xác' : 'Tên tài khoản hoặc mật khẩu không đúng'
     });
   }
 
@@ -531,7 +565,7 @@ app.get('/api/leads/export/csv', (req, res) => {
 
   const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-  res.setHeader('Content-Disposition', `attachment; filename=leads_vaynhanh247_${new Date().toISOString().slice(0, 10)}.csv`);
+  res.setHeader('Content-Disposition', `attachment; filename=leads_sosanhkhoanvay_com_${new Date().toISOString().slice(0, 10)}.csv`);
   res.send(csvContent);
 });
 
@@ -575,27 +609,78 @@ app.get('/api/analytics', (req, res) => {
   });
 });
 
+// --- PRODUCTS & APPLICATION GUIDE MANAGEMENT API ---
+
+// GET all products (including custom application steps & requirements)
+app.get('/api/products', (req, res) => {
+  const products = getProductsData();
+  res.json({ success: true, count: products.length, data: products });
+});
+
+// GET single product details
+app.get('/api/products/:id', (req, res) => {
+  const { id } = req.params;
+  const products = getProductsData();
+  const product = products.find(p => p.id === id);
+  if (!product) {
+    return res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm' });
+  }
+  res.json({ success: true, data: product });
+});
+
+// PUT update product details, applicationSteps, requirements, or affiliate link
+app.put('/api/products/:id', (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+  const products = getProductsData();
+  const index = products.findIndex(p => p.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm' });
+  }
+
+  products[index] = { ...products[index], ...updates };
+  saveProductsData(products);
+  res.json({
+    success: true,
+    message: `Đã lưu cập nhật hướng dẫn và thông tin cho ${products[index].name}`,
+    data: products[index]
+  });
+});
+
+// POST reset products to system default
+app.post('/api/products/reset', (req, res) => {
+  saveProductsData(INITIAL_PRODUCTS);
+  res.json({ success: true, message: 'Đã khôi phục danh sách và hướng dẫn ban đầu', data: INITIAL_PRODUCTS });
+});
+
 async function startServer() {
   const isDev = process.env.NODE_ENV !== 'production';
+  const distPath = path.join(__dirname, 'dist');
 
-  if (isDev) {
+  if (!isDev && fs.existsSync(distPath)) {
+    // Production: serve built static files
+    app.use(express.static(distPath));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
+  } else {
+    // Development or fallback: Vite SSR middlewares
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa'
     });
     app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(__dirname, 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
   }
 
-  app.listen(PORT, () => {
-    console.log(`Professional Financial Affiliate Server running at http://localhost:${PORT}`);
+  const HOST = '0.0.0.0';
+  app.listen(PORT, HOST, () => {
+    console.log(`Professional Financial Affiliate Server running at http://${HOST}:${PORT} (NODE_ENV: ${process.env.NODE_ENV || 'development'})`);
   });
 }
 
-startServer();
+startServer().catch((err) => {
+  console.error('Fatal error starting server:', err);
+  process.exit(1);
+});

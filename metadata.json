@@ -1,6 +1,6 @@
 {
-  "name": "VayNhanh247 - Nền Tảng Tài Chính & So Sánh Vay Tín Chấp, Thẻ Tín Dụng",
-  "description": "Nền tảng so sánh và đăng ký vay tín chấp, mở thẻ tín dụng online uy tín từ các ngân hàng hàng đầu với lãi suất ưu đãi, thủ tục nhanh chóng.",
+  "name": "sosanhkhoanvay.com – So Sánh Vay Tín Chấp & Mở Thẻ Tín Dụng Online Uy Tín",
+  "description": "Nền tảng so sánh các khoản vay tín chấp, mở thẻ tín dụng duyệt nhanh 15 phút từ VPBank, Shinhan, VIB, MCredit. Hotline tư vấn 0583 345 345, hoàn toàn miễn phí 100%.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

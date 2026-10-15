@@ -29,22 +29,36 @@ export function formatDateTime(isoString: string): string {
   }
 }
 
-// Load products
+// Load products from API with fallback to localStorage
 export async function getProducts(): Promise<FinancialProduct[]> {
-  // Check local overrides first
+  try {
+    const res = await fetch('/api/products');
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(json.data));
+        return json.data;
+      }
+    }
+  } catch (err) {
+    console.warn('API /api/products unreachable, falling back to local storage:', err);
+  }
+
+  // Check local overrides
   const stored = localStorage.getItem(STORAGE_KEY_PRODUCTS);
   if (stored) {
     try {
-      return JSON.parse(stored);
-    } catch {
-      // fallback
-    }
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } catch {}
   }
   return INITIAL_PRODUCTS;
 }
 
-// Save product update (e.g. customized affiliate link)
-export function saveCustomProduct(product: FinancialProduct) {
+// Save product update (application steps, requirements, affiliate link, etc.)
+export async function saveCustomProduct(product: FinancialProduct): Promise<FinancialProduct[]> {
   const current = getLocalProducts();
   const index = current.findIndex(p => p.id === product.id);
   if (index !== -1) {
@@ -53,6 +67,18 @@ export function saveCustomProduct(product: FinancialProduct) {
     current.push(product);
   }
   localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(current));
+
+  // Sync to backend server
+  try {
+    await fetch(`/api/products/${product.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(product)
+    });
+  } catch (e) {
+    console.warn('Failed to sync product to server:', e);
+  }
+
   return current;
 }
 
@@ -61,7 +87,10 @@ export function getLocalProducts(): FinancialProduct[] {
   const stored = localStorage.getItem(STORAGE_KEY_PRODUCTS);
   if (stored) {
     try {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     } catch {}
   }
   return INITIAL_PRODUCTS;
@@ -242,7 +271,7 @@ export function exportLeadsToCsv(leads: Lead[]) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.setAttribute('href', url);
-  link.setAttribute('download', `danh_sach_khach_hang_vay_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute('download', `danh_sach_leads_sosanhkhoanvay_com_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

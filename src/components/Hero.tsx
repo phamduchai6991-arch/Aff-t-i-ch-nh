@@ -26,8 +26,10 @@ export const Hero: React.FC<HeroProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center space-y-6">
           {/* Natural human editorial kicker */}
-          <div className="text-xs font-semibold tracking-wider text-blue-600 uppercase">
-            Nền tảng kết nối & so sánh tài chính trực tuyến
+          <div className="text-xs font-semibold tracking-wider text-blue-600 uppercase flex items-center justify-center gap-2">
+            <span>sosanhkhoanvay.com</span>
+            <span aria-hidden="true">·</span>
+            <span>Nền tảng kết nối & so sánh tài chính uy tín</span>
           </div>
 
           {/* Marquee Headline */}
@@ -37,23 +39,24 @@ export const Hero: React.FC<HeroProps> = ({
 
           {/* Subtitle */}
           <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Kết nối trực tiếp tới các ngân hàng và tổ chức tài chính hàng đầu Việt Nam. Lãi suất ưu đãi từ 0.99%/tháng, quy trình online 100%, bảo mật và hoàn toàn miễn phí làm hồ sơ.
+            Kết nối trực tiếp tới các ngân hàng và tổ chức tài chính hàng đầu Việt Nam. Lãi suất ưu đãi từ 0.99%/tháng, quy trình online 100%, bảo mật và hoàn toàn miễn phí làm hồ sơ. Hotline: <a href="tel:0583345345" className="font-bold text-blue-600 hover:underline">0583 345 345</a>.
           </p>
 
           {/* Action Row */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={onOpenQuickApply}
-              className="w-full sm:w-auto px-6 py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-98 text-white text-sm font-semibold rounded-lg shadow-sm transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-98 text-white text-sm font-semibold rounded-lg shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Đăng ký nhận tư vấn ngay</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <a
-              href="#tinh-lai-suat"
-              className="w-full sm:w-auto px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-medium rounded-lg transition-colors flex items-center justify-center"
+              href="tel:0583345345"
+              className="w-full sm:w-auto px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
             >
-              <span>Tính tiền trả góp hàng tháng</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Hotline: 0583 345 345</span>
             </a>
           </div>
 

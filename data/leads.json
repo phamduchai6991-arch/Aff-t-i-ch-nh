@@ -1,0 +1,176 @@
+[
+  {
+    "id": "LEAD-54054",
+    "fullName": "Phạm Đức Hải Test",
+    "phoneNumber": "0583345345",
+    "email": "",
+    "province": "Hà Nội",
+    "productId": "vpbank-fast",
+    "productName": "Vay Tiêu Dùng Tín Chấp VPBank Online",
+    "productCategory": "loan",
+    "loanAmount": "50.000.000 đ",
+    "monthlyIncome": "Chưa cập nhật",
+    "employmentType": "Đi làm hưởng lương",
+    "hasBadDebt": "none",
+    "status": "new",
+    "notes": "Khách hàng đăng ký tư vấn trực tuyến từ web",
+    "activities": [
+      {
+        "id": "act-1792064681912",
+        "timestamp": "2026-10-15T11:44:41.912Z",
+        "type": "system",
+        "note": "Khách hàng nộp hồ sơ trực tuyến cho gói Vay Tiêu Dùng Tín Chấp VPBank Online."
+      }
+    ],
+    "createdAt": "2026-10-15T11:44:41.912Z",
+    "affiliateClicked": false
+  },
+  {
+    "id": "LEAD-61253",
+    "fullName": "Phạm Văn Test",
+    "phoneNumber": "0965234222",
+    "email": "",
+    "province": "Hà Nội",
+    "productId": "sacombank-visa",
+    "productName": "Thẻ Tín Dụng Sacombank Visa Platinum",
+    "productCategory": "card",
+    "loanAmount": "Hạn mức 30 - 50 triệu",
+    "monthlyIncome": "Từ 5 - 10 triệu / tháng",
+    "employmentType": "Đi làm hưởng lương",
+    "hasBadDebt": "none",
+    "status": "new",
+    "notes": "Khách hàng đăng ký gói: Thẻ Tín Dụng Sacombank Visa Platinum",
+    "activities": [
+      {
+        "id": "act-1792063996889",
+        "timestamp": "2026-10-15T11:33:16.889Z",
+        "type": "system",
+        "note": "Khách hàng nộp hồ sơ trực tuyến cho gói Thẻ Tín Dụng Sacombank Visa Platinum."
+      }
+    ],
+    "createdAt": "2026-10-15T11:33:16.889Z",
+    "affiliateClicked": false
+  },
+  {
+    "id": "LEAD-10922",
+    "fullName": "Trần Thị Mai Anh",
+    "phoneNumber": "0987654321",
+    "email": "maianh.tran@gmail.com",
+    "province": "Hồ Chí Minh",
+    "productId": "vib-cashback",
+    "productName": "Thẻ Tín Dụng VIB Cash Back Hoàn Tiền",
+    "productCategory": "card",
+    "loanAmount": "Hạn mức 30 - 50 triệu",
+    "monthlyIncome": "Từ 10 - 20 triệu / tháng",
+    "employmentType": "Đi làm hưởng lương (Công ty/Cơ quan)",
+    "hasBadDebt": "none",
+    "status": "new",
+    "notes": "Khách hàng muốn mở thẻ để hoàn tiền chi tiêu Grab và siêu thị",
+    "activities": [
+      {
+        "id": "act-3",
+        "timestamp": "2026-10-15T09:25:40.356Z",
+        "type": "system",
+        "note": "Khách hàng tự đăng ký từ Landing Page."
+      }
+    ],
+    "createdAt": "2026-10-15T09:25:40.356Z",
+    "affiliateClicked": true
+  },
+  {
+    "id": "LEAD-10921",
+    "fullName": "Nguyễn Văn Hưng",
+    "phoneNumber": "0912345678",
+    "email": "hung.nguyen88@gmail.com",
+    "province": "Hà Nội",
+    "productId": "vpbank-fast",
+    "productName": "Vay Tiêu Dùng Tín Chấp VPBank Online",
+    "productCategory": "loan",
+    "loanAmount": "50.000.000 đ",
+    "monthlyIncome": "Từ 10 - 20 triệu / tháng",
+    "employmentType": "Đi làm hưởng lương (Công ty/Cơ quan)",
+    "hasBadDebt": "none",
+    "status": "contacted",
+    "notes": "Đã gọi lần 1 lúc 09:30. Khách hàng cần hỗ trợ thủ tục eKYC chụp ảnh CCCD. Hẹn chiều gọi lại gửi link.",
+    "activities": [
+      {
+        "id": "act-1",
+        "timestamp": "2026-10-15T06:25:40.356Z",
+        "type": "call",
+        "note": "Gọi điện lần 1: Đã liên hệ, khách đang bận hẹn gọi lại chiều."
+      },
+      {
+        "id": "act-2",
+        "timestamp": "2026-10-15T08:25:40.356Z",
+        "type": "zalo",
+        "note": "Đã nhắn tin qua Zalo gửi hướng dẫn chụp ảnh CCCD 2 mặt."
+      }
+    ],
+    "createdAt": "2026-10-15T05:25:40.356Z",
+    "affiliateClicked": true
+  },
+  {
+    "id": "LEAD-10924",
+    "fullName": "Vũ Hải Nam",
+    "phoneNumber": "0934112233",
+    "email": "hainam.vu@gmail.com",
+    "province": "Bình Dương",
+    "productId": "shinhan-finance",
+    "productName": "Shinhan Finance Vay Tiêu Dùng Lãi Thấp",
+    "productCategory": "loan",
+    "loanAmount": "70.000.000 đ",
+    "monthlyIncome": "Trên 20 triệu / tháng",
+    "employmentType": "Đi làm hưởng lương (Công ty/Cơ quan)",
+    "hasBadDebt": "none",
+    "status": "appointment",
+    "notes": "Khách hàng hẹn gọi lại sau 17h khi tan ca làm việc để tư vấn kỹ về sao kê.",
+    "activities": [
+      {
+        "id": "act-7",
+        "timestamp": "2026-10-15T02:25:40.356Z",
+        "type": "call",
+        "note": "Đã liên hệ, hẹn gọi lại 17h."
+      }
+    ],
+    "createdAt": "2026-10-15T00:25:40.356Z",
+    "affiliateClicked": true
+  },
+  {
+    "id": "LEAD-10923",
+    "fullName": "Lê Hoàng Long",
+    "phoneNumber": "0903456789",
+    "email": "long.le@yahoo.com",
+    "province": "Đà Nẵng",
+    "productId": "mcredit-fast",
+    "productName": "MCredit Vay Tiền Nhanh Tiêu Dùng",
+    "productCategory": "loan",
+    "loanAmount": "30.000.000 đ",
+    "monthlyIncome": "Từ 5 - 10 triệu / tháng",
+    "employmentType": "Kinh doanh cá thể / Hộ kinh doanh",
+    "hasBadDebt": "cic_low",
+    "status": "disbursed",
+    "notes": "Hồ sơ đã được MCredit duyệt thành công, giải ngân 30 triệu về tài khoản MB Bank.",
+    "activities": [
+      {
+        "id": "act-4",
+        "timestamp": "2026-10-14T10:25:40.356Z",
+        "type": "system",
+        "note": "Khách hàng đăng ký trên web."
+      },
+      {
+        "id": "act-5",
+        "timestamp": "2026-10-14T16:25:40.356Z",
+        "type": "call",
+        "note": "Hướng dẫn bổ sung thêm BHYT để được duyệt nhanh."
+      },
+      {
+        "id": "act-6",
+        "timestamp": "2026-10-15T04:25:40.356Z",
+        "type": "success",
+        "note": "Đối soát thành công: Đã giải ngân. Hoa hồng tạm tính 350.000đ."
+      }
+    ],
+    "createdAt": "2026-10-14T10:25:40.356Z",
+    "affiliateClicked": true
+  }
+]

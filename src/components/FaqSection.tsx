@@ -86,20 +86,20 @@ export const FaqSection: React.FC = () => {
             {/* Trust commitments */}
             <div className="p-6 bg-slate-900 text-white rounded-2xl space-y-3">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Cam kết từ VayNhanh247
+                Cam kết từ sosanhkhoanvay.com
               </h3>
               <div className="space-y-2 text-xs text-slate-300">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Miễn phí 100% dịch vụ giới thiệu và tư vấn</span>
+                  <span>Miễn phí 100% dịch vụ giới thiệu và tư vấn tài chính</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Dữ liệu khách hàng được mã hóa bảo mật</span>
+                  <span>Dữ liệu khách hàng được mã hóa bảo mật tuyệt đối</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Hỗ trợ đối soát và nhắc lịch trả nợ đúng hạn</span>
+                  <span>Hotline hỗ trợ 24/7: <a href="tel:0583345345" className="text-blue-400 font-bold hover:underline">0583 345 345</a></span>
                 </div>
               </div>
             </div>
