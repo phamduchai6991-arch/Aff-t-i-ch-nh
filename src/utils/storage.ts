@@ -33,7 +33,7 @@ export function formatDateTime(isoString: string): string {
 export async function getProducts(): Promise<FinancialProduct[]> {
   try {
     const res = await fetch('/api/products');
-    if (res.ok) {
+    if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data) && json.data.length > 0) {
         localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(json.data));
@@ -100,7 +100,7 @@ export function getLocalProducts(): FinancialProduct[] {
 export async function getLeads(): Promise<Lead[]> {
   try {
     const res = await fetch('/api/leads');
-    if (res.ok) {
+    if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         // sync to local storage for offline backup

@@ -91,9 +91,11 @@ export async function verifyCurrentSession(): Promise<AdminUser | null> {
     const res = await fetch('/api/auth/verify', {
       headers: { Authorization: `Bearer ${token}` }
     });
-    const data = await res.json();
-    if (data.authenticated && data.user) {
-      return data.user;
+    if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
+      const data = await res.json();
+      if (data.authenticated && data.user) {
+        return data.user;
+      }
     }
   } catch {}
 

@@ -662,6 +662,9 @@ async function startServer() {
     // Production: serve built static files
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
+      if (req.path.startsWith('/api')) {
+        return res.status(404).json({ success: false, message: 'API route not found' });
+      }
       res.sendFile(path.join(distPath, 'index.html'));
     });
   } else {
