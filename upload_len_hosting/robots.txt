@@ -1,0 +1,11 @@
+# robots.txt for https://sosanhkhoanvay.com/
+User-agent: *
+Allow: /
+
+# Chặn bot thu thập thông tin trang quản trị nội bộ
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap index
+Sitemap: https://sosanhkhoanvay.com/sitemap.xml

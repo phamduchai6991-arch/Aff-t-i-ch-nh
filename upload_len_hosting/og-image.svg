@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="50%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0B132B"/>
+    </linearGradient>
+    <linearGradient id="blueG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="cardG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+    <linearGradient id="goldG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle grid lines & glow -->
+  <circle cx="950" cy="200" r="320" fill="#2563EB" opacity="0.12"/>
+  <circle cx="200" cy="500" r="280" fill="#3B82F6" opacity="0.08"/>
+
+  <!-- Top Badge -->
+  <rect x="80" y="70" width="360" height="42" rx="21" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <rect x="86" y="76" width="30" height="30" rx="15" fill="#2563EB"/>
+  <text x="101" y="96" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">✓</text>
+  <text x="128" y="96" fill="#94A3B8" font-family="Arial, sans-serif" font-size="14" font-weight="bold">ĐỐI TÁC 15+ NGÂN HÀNG HÀNG ĐẦU</text>
+
+  <!-- Main Headline -->
+  <text x="80" y="175" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" letter-spacing="-1">
+    So Sánh Khoản Vay &amp;
+  </text>
+  <text x="80" y="235" fill="#60A5FA" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" letter-spacing="-1">
+    Mở Thẻ Tín Dụng Online
+  </text>
+
+  <!-- Subtitle -->
+  <text x="80" y="295" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="22" font-weight="normal">
+    Duyệt nhanh 15 phút · Lãi suất ưu đãi từ 0.99%/tháng
+  </text>
+  <text x="80" y="330" fill="#94A3B8" font-family="Arial, sans-serif" font-size="20">
+    VPBank · FE Credit · VIB · VietCredit · Shinhan · Lotte Finance
+  </text>
+
+  <!-- Trust Pills -->
+  <g transform="translate(80, 380)">
+    <rect width="180" height="48" rx="10" fill="#1E293B" stroke="#334155"/>
+    <text x="20" y="30" fill="#10B981" font-family="Arial, sans-serif" font-size="18" font-weight="bold">⚡ 100% Online</text>
+
+    <rect x="195" width="220" height="48" rx="10" fill="#1E293B" stroke="#334155"/>
+    <text x="215" y="30" fill="#60A5FA" font-family="Arial, sans-serif" font-size="18" font-weight="bold">🛡️ Không Thu Phí</text>
+
+    <rect x="430" width="240" height="48" rx="10" fill="#1E293B" stroke="#334155"/>
+    <text x="450" y="30" fill="#FBBF24" font-family="Arial, sans-serif" font-size="18" font-weight="bold">📞 0583 345 345</text>
+  </g>
+
+  <!-- Credit Card Graphic Representation on the Right -->
+  <g transform="translate(760, 110)" filter="url(#shadow)">
+    <!-- Credit Card 1 (Back/Tilt) -->
+    <g transform="rotate(-8 180 110)">
+      <rect width="360" height="220" rx="18" fill="url(#cardG)" stroke="#60A5FA" stroke-width="1.5"/>
+      <circle cx="50" cy="50" r="16" fill="#F59E0B" opacity="0.85"/>
+      <circle cx="72" cy="50" r="16" fill="#EF4444" opacity="0.85"/>
+      <rect x="40" y="90" width="50" height="36" rx="6" fill="#FDE047" opacity="0.8"/>
+      <text x="40" y="165" fill="#E2E8F0" font-family="monospace" font-size="18" letter-spacing="3">•••• 8899</text>
+      <text x="40" y="195" fill="#93C5FD" font-family="Arial, sans-serif" font-size="13" font-weight="bold">PLATINUM REWARDS</text>
+    </g>
+
+    <!-- Credit Card 2 (Front) -->
+    <g transform="translate(40, 120) rotate(5 180 110)">
+      <rect width="360" height="220" rx="18" fill="#0284C7" stroke="#38BDF8" stroke-width="2"/>
+      <text x="40" y="52" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="900">sosanhkhoanvay.com</text>
+      <rect x="40" y="85" width="48" height="34" rx="6" fill="#FCD34D"/>
+      <text x="40" y="155" fill="#FFFFFF" font-family="monospace" font-size="20" font-weight="bold" letter-spacing="3">4288 •••• •••• 6868</text>
+      <text x="40" y="190" fill="#E0F2FE" font-family="Arial, sans-serif" font-size="13">HẠN MỨC: 100.000.000 đ</text>
+      <text x="310" y="190" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="16" font-weight="900" text-anchor="end">VISA</text>
+    </g>
+  </g>
+
+  <!-- Bottom Brand Bar -->
+  <g transform="translate(80, 520)">
+    <rect width="48" height="48" rx="12" fill="#2563EB"/>
+    <text x="24" y="32" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="18" font-weight="900" text-anchor="middle">SKV</text>
+    <text x="64" y="24" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="22" font-weight="bold">sosanhkhoanvay.com</text>
+    <text x="64" y="44" fill="#64748B" font-family="Arial, sans-serif" font-size="14">Website tư vấn &amp; so sánh tài chính cá nhân miễn phí</text>
+  </g>
+</svg>

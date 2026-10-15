@@ -386,7 +386,7 @@ export default function App() {
               {
                 step: '01',
                 title: 'Chọn gói & Điền thông tin',
-                desc: 'Lựa chọn gói vay hoặc thẻ tín dụng phù hợp, nhập thông tin liên hệ cơ bản trên VayNhanh247.'
+                desc: 'Lựa chọn gói vay hoặc thẻ tín dụng phù hợp, nhập thông tin liên hệ cơ bản trên sosanhkhoanvay.com.'
               },
               {
                 step: '02',

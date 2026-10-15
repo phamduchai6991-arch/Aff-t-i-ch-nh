@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  
+  <!-- Inner Shield / Brand Motif -->
+  <g filter="url(#shadow)">
+    <!-- Shield Outline -->
+    <path d="M256 80 L380 140 C380 280 256 380 256 400 C256 380 132 280 132 140 Z" fill="#1E40AF" stroke="#60A5FA" stroke-width="8"/>
+    <!-- Gold Accent Star or Check -->
+    <path d="M220 230 L245 255 L300 195" fill="none" stroke="#FBBF24" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Letters SKV -->
+    <text x="256" y="340" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="900" text-anchor="middle" letter-spacing="4">SKV</text>
+  </g>
+</svg>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  
+  <!-- Trang chủ chính -->
+  <url>
+    <loc>https://sosanhkhoanvay.com/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Chuyên mục Vay Tín Chấp -->
+  <url>
+    <loc>https://sosanhkhoanvay.com/#goi-vay</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Chuyên mục Mở Thẻ Tín Dụng -->
+  <url>
+    <loc>https://sosanhkhoanvay.com/#the-tin-dung</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Công cụ Tính Lãi Suất Trả Góp -->
+  <url>
+    <loc>https://sosanhkhoanvay.com/#tinh-lai-suat</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Công cụ Kiểm Tra Tỷ Lệ Duyệt -->
+  <url>
+    <loc>https://sosanhkhoanvay.com/#kiem-tra-duyet</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Câu Hỏi Thường Gặp & Cam Kết Minh Bạch -->
+  <url>
+    <loc>https://sosanhkhoanvay.com/#faq-hoi-dap</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>
