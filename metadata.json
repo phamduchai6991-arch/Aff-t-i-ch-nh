@@ -1,0 +1,6 @@
+{
+  "name": "VayNhanh247 - Nền Tảng Tài Chính & So Sánh Vay Tín Chấp, Thẻ Tín Dụng",
+  "description": "Nền tảng so sánh và đăng ký vay tín chấp, mở thẻ tín dụng online uy tín từ các ngân hàng hàng đầu với lãi suất ưu đãi, thủ tục nhanh chóng.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
